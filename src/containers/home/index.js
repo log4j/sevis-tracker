@@ -208,7 +208,11 @@ class Home extends React.Component {
         <span>
           Open Source on{" "}
           <FaGithub style={{ verticalAlign: "middle", marginBottom: "2px" }} />
-          <a href="https://github.com/log4j/sevis-tracker" target="_blank">
+          <a
+            href="https://github.com/log4j/sevis-tracker"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             Github
           </a>
         </span>
