@@ -52,7 +52,6 @@ class Home extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         {this.showLoading()}
@@ -102,18 +101,14 @@ class Home extends React.Component {
   showData = () => {
     const { name, data } = this.props;
 
-    let employers = ((data && data.employmentAuthorizations) || []).reduce(
-      (all, item) => {
-        (item.employers || []).forEach(em => {
-          all.push(em);
-        });
-        return all;
-      },
-      []
-    );
-    employers = employers.sort((a, b) => {
-      return a.sevisEmployerId < b.sevisEmployerId;
+    let eads = (data && data.employmentAuthorizations) || [];
+    eads = eads.sort((a, b) => a.sevisEmploymentId < b.sevisEmploymentId);
+    eads.forEach(item => {
+      item.employers = item.employers.sort((a, b) => {
+        return a.sevisEmployerId < b.sevisEmployerId;
+      });
     });
+
     return (
       <div>
         {name && (
@@ -127,35 +122,39 @@ class Home extends React.Component {
           </div>
         )}
         <div>
-          {employers.map(item => (
-            <div key={item.sevisEmployerId} className="record">
+          {eads.map((ead, eIndex) => (
+            <div key={ead.sevisEmploymentId} className="record">
+              <h3>
+                EAD#{eads.length - eIndex} <DateSpan date={ead.startDate} /> -{" "}
+                <DateSpan date={ead.endDate} />
+              </h3>
               <table>
-                <tbody>
-                  <tr>
-                    <th>Employer</th>
-                    <td>{item.name}</td>
-                  </tr>
-                  <tr>
-                    <th>Start</th>
-                    <td>
-                      <DateSpan date={item.startDate} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>End</th>
-                    <td>
-                      <DateSpan date={item.endDate} />
-                    </td>
-                  </tr>
-                </tbody>
+                {ead.employers.map((item, index) => (
+                  <tbody key={item.sevisEmployerId}>
+                    <tr>
+                      <th>#{ead.employers.length - index}</th>
+                      <td>{item.name}</td>
+                    </tr>
+                    <tr>
+                      <th>Start</th>
+                      <td>
+                        <DateSpan date={item.startDate} />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>End</th>
+                      <td>
+                        <DateSpan date={item.endDate} />
+                      </td>
+                    </tr>
+                  </tbody>
+                ))}
               </table>
             </div>
           ))}
 
           {name &&
-            employers.length === 0 && (
-              <p className="tip">Click Refresh to update</p>
-            )}
+            eads.length === 0 && <p className="tip">Click Refresh to update</p>}
         </div>
       </div>
     );

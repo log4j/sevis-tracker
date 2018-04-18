@@ -69,10 +69,19 @@ button:focus {
   padding: 16px;
   margin-bottom: 16px;
 }
-
+.record h3 {
+  text-align: center;
+  margin: 5px;
+}
 .record table {
   width: 100%;
   table-layout: fixed;
+}
+.record tbody {
+  border-top: 1px solid gray;
+  padding: 5px 0;
+  display: block;
+  margin: 5px 0;
 }
 .record table th {
   width: 80px;
