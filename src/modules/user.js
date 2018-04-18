@@ -1,4 +1,5 @@
 import * as http from "./http.js";
+import ReactGA from "./reactga";
 
 export const UPDATE_EMAIL = "UPDATE_EMAIL";
 export const UPDATE_PASSWORD = "UPDATE_PASSWORD";
@@ -116,6 +117,11 @@ export const login = (email, password) => {
       payload: null
     });
 
+    ReactGA.event({
+      category: "Action",
+      action: "Login"
+    });
+
     http
       .post("https://sevp.ice.gov/optapp/rest/loginLogout/login", {
         email,
@@ -124,6 +130,10 @@ export const login = (email, password) => {
       .then(res => {
         if (res && res.value) {
           // login!!
+          ReactGA.event({
+            category: "Action",
+            action: "Login Success"
+          });
 
           // extract token:
           const base64Id = res.value.split(".")[1];
@@ -145,6 +155,10 @@ export const login = (email, password) => {
 
           return true;
         } else {
+          ReactGA.event({
+            category: "Action",
+            action: "Login Fail"
+          });
           dispatch({
             type: LOGIN_ERROR
           });
@@ -191,6 +205,11 @@ export const fetchInformation = (sub, token) => {
     dispatch({
       type: ERROR,
       payload: null
+    });
+
+    ReactGA.event({
+      category: "Action",
+      action: "Fetch Information"
     });
 
     http

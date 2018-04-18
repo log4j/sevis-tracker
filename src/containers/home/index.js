@@ -2,6 +2,7 @@ import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import FaGithub from "react-icons/lib/fa/github";
+import ReactGA from "../../modules/reactga";
 
 import {
   login,
@@ -27,6 +28,8 @@ const DateSpan = props => {
 class Home extends React.Component {
   constructor(props) {
     super(props);
+
+    ReactGA.pageview(window.location.pathname + window.location.search);
 
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
