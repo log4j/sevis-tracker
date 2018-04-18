@@ -135,7 +135,7 @@ class Home extends React.Component {
                 {ead.employers.map((item, index) => (
                   <tbody key={item.sevisEmployerId}>
                     <tr>
-                      <th>#{ead.employers.length - index}</th>
+                      <th>Employer #{ead.employers.length - index}</th>
                       <td>{item.name}</td>
                     </tr>
                     <tr>

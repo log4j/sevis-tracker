@@ -82,11 +82,16 @@ button:focus {
   padding: 5px 0;
   display: block;
   margin: 5px 0;
+  width: 100%;
+}
+.record tr {
+  width: 100%;
 }
 .record table th {
-  width: 80px;
+  min-width: 110px;
   padding-right: 8px;
   text-align: right;
+  display: inline-block;
 }
 
 .record table td {
@@ -94,7 +99,8 @@ button:focus {
   text-overflow: ellipsis;
   white-space: nowrap;
   word-wrap: break-word;
-  width: 100%;
+  max-width: calc(100% - 110px);
+  display: inline-block;
 }
 
 button {
