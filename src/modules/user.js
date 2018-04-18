@@ -122,19 +122,12 @@ export const login = (email, password) => {
         password
       })
       .then(res => {
-        console.log(res);
-        // res = {
-        //     value:
-        //         "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiU1RVREVOVCIsInN1YiI6IjVhYjc4ZDFjOTYwN2VjMmRmNTQ3YTU0MiIsImV4cCI6MTUyNDAxMTE2NiwiaWF0IjoxNTIzOTkzMTY2fQ.lNi1zGlUp1Sn91ORKl_7QBFPQQWtiPmfky8Pppe9q7A0fKkORXNVNQRiQvr49u5u7YdtfeNyhsAZRvBYD7KG4w"
-        // };
         if (res && res.value) {
           // login!!
-          // http.setToken(res.value);
 
-          // extrack token:
+          // extract token:
           const base64Id = res.value.split(".")[1];
           const userInfo = JSON.parse(atob(base64Id));
-          //userInfo: {role: "STUDENT", sub: "5ab78d1c9607ec2df547a542", exp: 1524011166, iat: 1523993166}
 
           localStorage.setItem(KEY_TOKEN, res.value);
           localStorage.setItem(KEY_USER_ID, userInfo.sub);
