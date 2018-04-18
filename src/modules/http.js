@@ -12,11 +12,18 @@ const windowFetch = (() => {
   return window.fetch;
 })();
 
-let token = "";
-
-export function setToken(newToken) {
-  token = newToken;
-}
+const responseHandler = res => {
+  if (
+    res &&
+    res.headers &&
+    res.headers.get("Content-Type") &&
+    res.headers.get("Content-Type").indexOf("json") >= 0
+  ) {
+    return res.json();
+  } else {
+    return null;
+  }
+};
 
 export function post(url, body, options) {
   return windowFetch(url, {
@@ -27,10 +34,10 @@ export function post(url, body, options) {
       "Content-Type": "application/json",
       ...(options && options.headers)
     }
-  }).then(res => res.json());
+  }).then(responseHandler);
 }
 
-export function get(url, body, options) {
+export function get(url, token, options) {
   return windowFetch(url, {
     method: "GET",
     ...options,
@@ -39,5 +46,5 @@ export function get(url, body, options) {
       Authorization: "Bearer " + token,
       ...(options && options.headers)
     }
-  }).then(res => res.json());
+  }).then(responseHandler);
 }

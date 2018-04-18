@@ -31,6 +31,7 @@ const initialState = {
 };
 
 //TEST
+/*
 initialState.user = "5ab78d1c9607ec2df547a542";
 initialState.data = {
   id: "5ab78d1c9607ec2df547a542",
@@ -183,7 +184,7 @@ initialState.data = {
     }
   ]
 };
-
+*/
 //check local storage
 const token = localStorage.getItem(KEY_TOKEN);
 const user = localStorage.getItem(KEY_USER_ID);
@@ -261,7 +262,7 @@ export const login = (email, password) => {
         };
         if (res && res.value) {
           // login!!
-          http.setToken(res.value);
+          // http.setToken(res.value);
 
           // extrack token:
           const base64Id = res.value.split(".")[1];
@@ -273,7 +274,7 @@ export const login = (email, password) => {
             payload: userInfo.sub
           });
 
-          dispatch(fetchInformation(userInfo.sub));
+          dispatch(fetchInformation(userInfo.sub, res.value));
 
           return true;
         } else {
@@ -290,7 +291,7 @@ export const login = (email, password) => {
   };
 };
 
-export const fetchInformation = sub => {
+export const fetchInformation = (sub, token) => {
   return dispatch => {
     http.get("https://sevp.ice.gov/optapp/rest/students/" + sub).then(res => {
       if (res && res.id) {
