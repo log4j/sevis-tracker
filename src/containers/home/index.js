@@ -1,8 +1,13 @@
 import React from "react";
-import { push } from "react-router-redux";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { login, updateEmail, updatePassword } from "../../modules/user";
+import {
+  login,
+  logout,
+  updateEmail,
+  updatePassword,
+  fetchInformation
+} from "../../modules/user";
 
 const DateSpan = props => {
   if (props && props.date) {
@@ -24,6 +29,7 @@ class Home extends React.Component {
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   handleEmailChange(event) {
@@ -34,43 +40,69 @@ class Home extends React.Component {
     this.props.updatePassword(event.target.value);
   }
 
-  handleSubmit() {
+  handleSubmit(event) {
     const { email, password } = this.props;
-    this.props.login({ email, password });
+    this.props.login(email, password);
+    event.preventDefault();
+  }
+
+  handleRefresh() {
+    const { user, token } = this.props;
+    this.props.fetchInformation(user, token);
   }
 
   render() {
-    const { data } = this.props;
     console.log(this.props);
     return (
       <div>
-        {!data && this.showLogin()}
-        {data && this.showData()}
+        {this.showLoading()}
+        {this.showLogin()}
+        {this.showData()}
+        {this.showRefreshButton()}
+        {this.showError()}
       </div>
     );
   }
 
   showLogin = () => {
-    const { email, password } = this.props;
-
+    const { email, password, data, token } = this.props;
+    if (data || token) {
+      return null;
+    }
     return (
-      <div>
-        <div className="email">
-          <input value={email} onChange={this.handleEmailChange} />
-        </div>
-        <div className="password">
-          <input value={password} onChange={this.handlePasswordChange} />
-        </div>
-        <div className="action">
-          <button onClick={this.handleSubmit}>Submit</button>
-        </div>
+      <div className="form">
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            <h4> Login with you SEVP account </h4>
+          </div>
+          <div className="email">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={this.handleEmailChange}
+            />
+          </div>
+          <div className="password">
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={this.handlePasswordChange}
+            />
+          </div>
+          <div className="action">
+            <button type="submit">Login</button>
+          </div>
+        </form>
       </div>
     );
   };
 
   showData = () => {
-    const { data } = this.props;
-    let employers = (data.employmentAuthorizations || []).reduce(
+    const { name, data } = this.props;
+
+    let employers = ((data && data.employmentAuthorizations) || []).reduce(
       (all, item) => {
         (item.employers || []).forEach(em => {
           all.push(em);
@@ -84,27 +116,88 @@ class Home extends React.Component {
     });
     return (
       <div>
-        <p>
-          {" "}
-          {data.givenName} {data.surName}{" "}
-        </p>
+        {name && (
+          <div className="title">
+            <h3>
+              <button className="btn-logout" onClick={this.props.logout}>
+                Logout
+              </button>
+              {name}
+            </h3>
+          </div>
+        )}
         <div>
           {employers.map(item => (
-            <div>
-              <p>
-                <span>Employer</span> {item.name}
-              </p>
-              <p>
-                <span>Start</span> <DateSpan date={item.startDate} />
-              </p>
-              <p>
-                <span>End</span> <DateSpan date={item.endDate} />
-              </p>
+            <div key={item.sevisEmployerId} className="record">
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Employer</th>
+                    <td>{item.name}</td>
+                  </tr>
+                  <tr>
+                    <th>Start</th>
+                    <td>
+                      <DateSpan date={item.startDate} />
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>End</th>
+                    <td>
+                      <DateSpan date={item.endDate} />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           ))}
+
+          {name &&
+            employers.length === 0 && (
+              <p className="tip">Click Refresh to update</p>
+            )}
         </div>
       </div>
     );
+  };
+
+  showRefreshButton = () => {
+    const { user, token } = this.props;
+    if (user && token) {
+      return (
+        <div className="reload-btn">
+          <button onClick={this.handleRefresh}>Refresh</button>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  showError = () => {
+    const { error } = this.props;
+    if (error) {
+      return (
+        <p>
+          <span className="error">{error}</span>
+        </p>
+      );
+    } else {
+      return null;
+    }
+  };
+
+  showLoading = () => {
+    const { loading } = this.props;
+    if (loading) {
+      return (
+        <div className="loading">
+          <div className="loader" />
+        </div>
+      );
+    } else {
+      return null;
+    }
   };
 }
 
@@ -112,7 +205,9 @@ const mapStateToProps = state => ({
   email: state.user.email,
   password: state.user.password,
   user: state.user.user,
+  name: state.user.name,
   data: state.user.data,
+  token: state.user.token,
   loading: state.user.loading,
   error: state.user.error
 });
@@ -121,9 +216,10 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       login,
+      logout,
       updateEmail,
       updatePassword,
-      changePage: () => push("/about-us")
+      fetchInformation
     },
     dispatch
   );

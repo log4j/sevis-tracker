@@ -4,13 +4,145 @@ html {
 
 body {
   margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif;
+  padding: 16px;
+  font-family: Open Sans, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Helvetica, Arial, sans-serif;
   font-size: 1rem;
+  font-weight: 300;
+  color: #5c5c5c;
+  background: #d4dadd;
   line-height: 1.5;
+}
+
+main {
+  max-width: 480px;
+  margin: auto;
+}
+
+h3 {
+  text-align: center;
 }
 
 button:disabled {
   opacity: 0.5;
+}
+button:focus {
+  outline: none;
+}
+.loading {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #d4dadd;
+}
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -60px;
+  margin-top: -60px;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.record {
+  border-radius: 5px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.record table {
+  width: 100%;
+  table-layout: fixed;
+}
+.record table th {
+  width: 80px;
+  padding-right: 8px;
+  text-align: right;
+}
+
+.record table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-wrap: break-word;
+  width: 100%;
+}
+
+button {
+  border-radius: 5px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  padding: 0.6em 1.4em;
+  background: #526066;
+  border: none;
+  color: white;
+  text-align: center;
+}
+
+button:hover {
+  background: #728086;
+}
+
+button.btn-logout {
+  background: transparent;
+  color: inherit;
+  float: right;
+  padding: 0px 20px;
+  box-shadow: none;
+}
+.reload-btn {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+}
+
+.form {
+  text-align: center;
+  padding-top: 50px;
+}
+.form input {
+  border: none;
+  border-bottom: 1px solid gray;
+  outline: none;
+  margin: 10px 10px;
+}
+
+.form button {
+  margin: 15px;
+}
+
+.tip {
+  text-align: center;
+  width: 100%;
+  font-style: italic;
+}
+
+.error {
+  position: fixed;
+  top: 30px;
+  color: red;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: bold;
 }
