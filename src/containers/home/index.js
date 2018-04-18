@@ -1,6 +1,8 @@
 import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import FaGithub from "react-icons/lib/fa/github";
+
 import {
   login,
   logout,
@@ -59,6 +61,7 @@ class Home extends React.Component {
         {this.showData()}
         {this.showRefreshButton()}
         {this.showError()}
+        {this.showFooter()}
       </div>
     );
   }
@@ -197,6 +200,20 @@ class Home extends React.Component {
     } else {
       return null;
     }
+  };
+
+  showFooter = () => {
+    return (
+      <div className="footer">
+        <span>
+          Open Source on{" "}
+          <FaGithub style={{ verticalAlign: "middle", marginBottom: "2px" }} />
+          <a href="https://github.com/log4j/sevis-tracker" target="_blank">
+            Github
+          </a>
+        </span>
+      </div>
+    );
   };
 }
 

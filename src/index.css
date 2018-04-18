@@ -155,3 +155,10 @@ button.btn-logout {
   text-align: center;
   font-weight: bold;
 }
+
+.footer {
+  width: 100%;
+  margin-top: 50px;
+  text-align: center;
+  font-size: 12px;
+}
