@@ -1,5 +1,5 @@
 {
-  "name": "create-react-app-redux",
+  "name": "sevis-tracker",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -11,11 +11,8 @@
   },
   "dependencies": {
     "base-64": "^0.1.0",
-    "locale2": "^2.2.0",
     "moment": "^2.22.1",
-    "moment-timezone": "^0.5.16",
     "react": "^16.2.0",
-    "react-datetime": "^2.14.0",
     "react-dom": "^16.2.0",
     "react-ga": "^2.4.1",
     "react-icons": "^2.2.7",
@@ -37,7 +34,7 @@
     "eject": "react-scripts eject",
     "precommit": "lint-staged"
   },
-  "homepage": "https://cra-redux-router-thunk.herokuapp.com",
+  "homepage": "https://mangs.site",
   "lint-staged": {
     "*.{js,json,css,md}": ["prettier --write", "git add"]
   }
