@@ -90,6 +90,11 @@ export default (state = initialState, action) => {
     case RESET:
       return {
         ...state,
+        name: null,
+        token: null,
+        data: null,
+        loading: false,
+        user: null,
         error: "Please login again"
       };
 
@@ -232,6 +237,10 @@ export const fetchInformation = (sub, token) => {
           });
         } else {
           // error, clear all
+          localStorage.removeItem(KEY_NAME);
+          localStorage.removeItem(KEY_TOKEN);
+          localStorage.removeItem(KEY_USER_ID);
+          localStorage.removeItem(KEY_TOKEN_EXPIRE);
           dispatch({
             type: RESET
           });
