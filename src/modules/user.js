@@ -11,6 +11,7 @@ export const LOGIN_ERROR = "LOGIN_ERROR";
 export const TOKEN_ERROR = "TOKEN_ERROR";
 export const RESET = "RESET";
 export const ERROR = "ERROR";
+export const UPDATE_HISTORY = "UPDATE_HISTORY";
 
 const KEY_TOKEN = "KEY_TOKEN";
 const KEY_TOKEN_EXPIRE = "KEY_TOKEN_EXPIRE";
@@ -26,6 +27,7 @@ const initialState = {
   name: null,
   token: null,
   data: null,
+  historys: null,
   error: null,
   loading: false
 };
@@ -85,6 +87,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: action.payload
+      };
+
+    case UPDATE_HISTORY:
+      return {
+        ...state,
+        historys: action.payload
       };
 
     case RESET:
@@ -185,6 +193,11 @@ export const logout = () => {
     });
 
     dispatch({
+      type: UPDATE_HISTORY,
+      payload: null
+    });
+
+    dispatch({
       type: UPDATE_NAME,
       payload: null
     });
@@ -221,30 +234,55 @@ export const fetchInformation = (sub, token) => {
       .get("https://sevp.ice.gov/optapp/rest/students/" + sub, token)
       .then(res => {
         if (res && res.id) {
-          dispatch({
-            type: UPDATE_DATA,
-            payload: res
-          });
-          const name = res.givenName + " " + res.surName;
-          localStorage.setItem(KEY_NAME, name);
-          dispatch({
-            type: UPDATE_NAME,
-            payload: name
-          });
-          dispatch({
-            type: UPDATE_LOADING,
-            payload: false
-          });
+          return res;
         } else {
-          // error, clear all
-          localStorage.removeItem(KEY_NAME);
-          localStorage.removeItem(KEY_TOKEN);
-          localStorage.removeItem(KEY_USER_ID);
-          localStorage.removeItem(KEY_TOKEN_EXPIRE);
-          dispatch({
-            type: RESET
-          });
+          throw new Error("No Valid Data");
         }
+      })
+      .then(userData => {
+        return http
+          .postWithToken(
+            "https://sevp.ice.gov/optapp/rest/students/studentHistory/" + sub,
+            null,
+            token
+          )
+          .then(res => {
+            if (Array.isArray(res)) {
+              return { userData, historys: res };
+            } else {
+              return { userData, historys: [] };
+            }
+          });
+      })
+      .then(({ userData, historys }) => {
+        dispatch({
+          type: UPDATE_DATA,
+          payload: userData
+        });
+        dispatch({
+          type: UPDATE_HISTORY,
+          payload: historys
+        });
+        const name = userData.givenName + " " + userData.surName;
+        localStorage.setItem(KEY_NAME, name);
+        dispatch({
+          type: UPDATE_NAME,
+          payload: name
+        });
+        dispatch({
+          type: UPDATE_LOADING,
+          payload: false
+        });
+      })
+      .catch(error => {
+        // error, clear all
+        localStorage.removeItem(KEY_NAME);
+        localStorage.removeItem(KEY_TOKEN);
+        localStorage.removeItem(KEY_USER_ID);
+        localStorage.removeItem(KEY_TOKEN_EXPIRE);
+        dispatch({
+          type: RESET
+        });
       });
   };
 };

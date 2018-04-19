@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import FaGithub from "react-icons/lib/fa/github";
 import ReactGA from "../../modules/reactga";
 
+import Moment from "react-moment";
+
 import {
   login,
   logout,
@@ -11,19 +13,6 @@ import {
   updatePassword,
   fetchInformation
 } from "../../modules/user";
-
-const DateSpan = props => {
-  if (props && props.date) {
-    const date = new Date(props.date);
-    return (
-      <span className="date">
-        {date.getUTCFullYear()}/{date.getUTCMonth() + 1}/{date.getUTCDate()}
-      </span>
-    );
-  } else {
-    return "";
-  }
-};
 
 class Home extends React.Component {
   constructor(props) {
@@ -54,6 +43,13 @@ class Home extends React.Component {
   handleRefresh() {
     const { user, token } = this.props;
     this.props.fetchInformation(user, token);
+  }
+
+  componentDidMount() {
+    const { data, user, token, error } = this.props;
+    if (!data && user && token && !error) {
+      this.handleRefresh();
+    }
   }
 
   render() {
@@ -116,8 +112,7 @@ class Home extends React.Component {
   };
 
   showData = () => {
-    const { name, data } = this.props;
-
+    const { name, data, historys } = this.props;
     let eads = (data && data.employmentAuthorizations) || [];
     eads = eads.sort((a, b) => a.sevisEmploymentId < b.sevisEmploymentId);
     eads.forEach(item => {
@@ -142,8 +137,9 @@ class Home extends React.Component {
           {eads.map((ead, eIndex) => (
             <div key={ead.sevisEmploymentId} className="record">
               <h3>
-                EAD#{eads.length - eIndex} <DateSpan date={ead.startDate} /> -{" "}
-                <DateSpan date={ead.endDate} />
+                EAD#{eads.length - eIndex}
+                <Moment format="YYYY/MM/DD">{ead.startDate}</Moment> -{" "}
+                <Moment format="YYYY/MM/DD">{ead.endDate}</Moment>
               </h3>
               <table>
                 {ead.employers.map((item, index) => (
@@ -155,18 +151,55 @@ class Home extends React.Component {
                     <tr>
                       <th>Start</th>
                       <td>
-                        <DateSpan date={item.startDate} />
+                        <Moment format="YYYY/MM/DD">{item.startDate}</Moment>
                       </td>
                     </tr>
                     <tr>
                       <th>End</th>
                       <td>
-                        <DateSpan date={item.endDate} />
+                        <Moment format="YYYY/MM/DD">{item.endDate}</Moment>
                       </td>
                     </tr>
                   </tbody>
                 ))}
               </table>
+            </div>
+          ))}
+          {(historys || []).map((update, index) => (
+            <div key={update.modificationDate} className="record history">
+              <h3> History #{historys.length - index}</h3>
+              <label style={{ float: "right" }}>
+                By {update.modifyingUserName} at{" "}
+                <Moment format="YYYY/MM/DD HH:mm">
+                  {update.modificationDate}
+                </Moment>
+              </label>
+              {/* <label style={{float:'right'}}>By {update.modifyingUserName} at <Moment format="YYYY/MM/DD HH:mm">{update.modificationDate}</Moment></label> */}
+
+              {update.changedFields &&
+                update.changedFields.length && (
+                  <table>
+                    {update.changedFields.map((item, index) => (
+                      <tbody key={item}>
+                        <tr>
+                          <th colSpan="2">
+                            {update.changesFromPrevious[index]} -{" "}
+                            {update.typeList[index]} -{" "}
+                            {update.changedFields[index]}
+                          </th>
+                        </tr>
+                        <tr>
+                          <th>From</th>
+                          <td>{update.previous[index]}</td>
+                        </tr>
+                        <tr>
+                          <th>To</th>
+                          <td>{update.newChange[index]}</td>
+                        </tr>
+                      </tbody>
+                    ))}
+                  </table>
+                )}
             </div>
           ))}
 
@@ -241,6 +274,7 @@ const mapStateToProps = state => ({
   user: state.user.user,
   name: state.user.name,
   data: state.user.data,
+  historys: state.user.historys,
   token: state.user.token,
   loading: state.user.loading,
   error: state.user.error

@@ -28,13 +28,21 @@ const responseHandler = res => {
 export function post(url, body, options) {
   return windowFetch(url, {
     method: "POST",
-    body: JSON.stringify(body) || "",
+    body: JSON.stringify(body || {}) || "",
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...(options && options.headers)
     }
   }).then(responseHandler);
+}
+
+export function postWithToken(url, body, token) {
+  return post(url, body, {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
 }
 
 export function get(url, token, options) {
