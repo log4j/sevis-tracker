@@ -111,7 +111,7 @@ button:focus {
   max-width: calc(100% - 110px);
   display: inline-block;
 }
-button {
+.reload-btn button {
   border-radius: 5px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
@@ -122,7 +122,7 @@ button {
   text-align: center;
 }
 
-button:hover {
+.reload-btn button:hover {
   background: #728086;
 }
 
@@ -130,6 +130,7 @@ button.btn-logout {
   background: transparent;
   color: inherit;
   float: right;
+  border: none;
   padding: 0px 20px;
   box-shadow: none;
 }
@@ -175,4 +176,60 @@ button.btn-logout {
   margin-top: 50px;
   text-align: center;
   font-size: 12px;
+}
+
+.icon-spin {
+  -webkit-animation: icon-spin 2s infinite linear;
+  animation: icon-spin 2s infinite linear;
+}
+
+@-webkit-keyframes icon-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes icon-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.showHistory {
+  text-align: center;
+  width: 100%;
+  display: block;
+  height: 40px;
+}
+
+.showHistory button {
+  border-radius: 5px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 5px 16px;
+}
+
+.showHistory button:hover {
+  border-radius: 5px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  background: #f3f3f3;
+}
+
+.loadingHistory {
+  text-align: center;
+  width: 100%;
+  display: block;
+  height: 40px;
 }

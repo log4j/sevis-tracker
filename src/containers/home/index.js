@@ -2,6 +2,7 @@ import React from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import FaGithub from "react-icons/lib/fa/github";
+import FaSpinner from "react-icons/lib/fa/spinner";
 import ReactGA from "../../modules/reactga";
 
 import Moment from "react-moment";
@@ -11,7 +12,8 @@ import {
   logout,
   updateEmail,
   updatePassword,
-  fetchInformation
+  fetchInformation,
+  fecthHistory
 } from "../../modules/user";
 
 class Home extends React.Component {
@@ -24,6 +26,7 @@ class Home extends React.Component {
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRefresh = this.handleRefresh.bind(this);
+    this.handleFetchHistory = this.handleFetchHistory.bind(this);
   }
 
   handleEmailChange(event) {
@@ -38,6 +41,11 @@ class Home extends React.Component {
     const { email, password } = this.props;
     this.props.login(email, password);
     event.preventDefault();
+  }
+
+  handleFetchHistory() {
+    const { user, token } = this.props;
+    this.props.fecthHistory(user, token);
   }
 
   handleRefresh() {
@@ -112,7 +120,7 @@ class Home extends React.Component {
   };
 
   showData = () => {
-    const { name, data, historys } = this.props;
+    const { name, data, showHistory, loadingHistory, historys } = this.props;
     let eads = (data && data.employmentAuthorizations) || [];
     eads = eads.sort((a, b) => a.sevisEmploymentId < b.sevisEmploymentId);
     eads.forEach(item => {
@@ -165,43 +173,61 @@ class Home extends React.Component {
               </table>
             </div>
           ))}
-          {(historys || []).map((update, index) => (
-            <div key={update.modificationDate} className="record history">
-              <h3> History #{historys.length - index}</h3>
-              <label style={{ float: "right" }}>
-                By {update.modifyingUserName} at{" "}
-                <Moment format="YYYY/MM/DD HH:mm">
-                  {update.modificationDate}
-                </Moment>
-              </label>
-              {/* <label style={{float:'right'}}>By {update.modifyingUserName} at <Moment format="YYYY/MM/DD HH:mm">{update.modificationDate}</Moment></label> */}
+          {data &&
+            !showHistory && (
+              <div className="showHistory">
+                <button onClick={this.handleFetchHistory}>
+                  click to load history
+                </button>
+              </div>
+            )}
+          {data &&
+            showHistory &&
+            loadingHistory && (
+              <div className="loadingHistory">
+                <FaSpinner className="icon-spin" />
+              </div>
+            )}
+          {data &&
+            showHistory &&
+            !loadingHistory &&
+            (historys || []).map((update, index) => (
+              <div key={update.modificationDate} className="record history">
+                <h3> History #{historys.length - index}</h3>
+                <label style={{ float: "right" }}>
+                  By {update.modifyingUserName} at{" "}
+                  <Moment format="YYYY/MM/DD HH:mm">
+                    {update.modificationDate}
+                  </Moment>
+                </label>
+                {/* <label style={{float:'right'}}>By {update.modifyingUserName} at <Moment format="YYYY/MM/DD HH:mm">{update.modificationDate}</Moment></label> */}
 
-              {update.changedFields &&
-                update.changedFields.length && (
-                  <table>
-                    {update.changedFields.map((item, index) => (
-                      <tbody key={item}>
-                        <tr>
-                          <th colSpan="2">
-                            {update.changesFromPrevious[index]} -{" "}
-                            {update.typeList[index]} -{" "}
-                            {update.changedFields[index]}
-                          </th>
-                        </tr>
-                        <tr>
-                          <th>From</th>
-                          <td>{update.previous[index]}</td>
-                        </tr>
-                        <tr>
-                          <th>To</th>
-                          <td>{update.newChange[index]}</td>
-                        </tr>
-                      </tbody>
-                    ))}
-                  </table>
-                )}
-            </div>
-          ))}
+                {update.changedFields &&
+                  update.changedFields.length && (
+                    <table>
+                      {update.changedFields.map((item, index) => (
+                        <tbody key={item}>
+                          <tr>
+                            <th colSpan="2">
+                              {update.changesFromPrevious[index]} -{" "}
+                              {update.typeList[index]} -{" "}
+                              {update.changedFields[index]}
+                            </th>
+                          </tr>
+                          <tr>
+                            <th>From</th>
+                            <td>{update.previous[index]}</td>
+                          </tr>
+                          <tr>
+                            <th>To</th>
+                            <td>{update.newChange[index]}</td>
+                          </tr>
+                        </tbody>
+                      ))}
+                    </table>
+                  )}
+              </div>
+            ))}
 
           {name &&
             eads.length === 0 && <p className="tip">Click Refresh to update</p>}
@@ -274,6 +300,8 @@ const mapStateToProps = state => ({
   user: state.user.user,
   name: state.user.name,
   data: state.user.data,
+  showHistory: state.user.showHistory,
+  loadingHistory: state.user.loadingHistory,
   historys: state.user.historys,
   token: state.user.token,
   loading: state.user.loading,
@@ -287,7 +315,8 @@ const mapDispatchToProps = dispatch =>
       logout,
       updateEmail,
       updatePassword,
-      fetchInformation
+      fetchInformation,
+      fecthHistory
     },
     dispatch
   );

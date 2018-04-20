@@ -12,6 +12,8 @@ export const TOKEN_ERROR = "TOKEN_ERROR";
 export const RESET = "RESET";
 export const ERROR = "ERROR";
 export const UPDATE_HISTORY = "UPDATE_HISTORY";
+export const UPDATE_SHOW_HISTORY = "UPDATE_SHOW_HISTORY";
+export const UPDATE_LOADING_HISTORY = "UPDATE_LOADING_HISTORY";
 
 const KEY_TOKEN = "KEY_TOKEN";
 const KEY_TOKEN_EXPIRE = "KEY_TOKEN_EXPIRE";
@@ -27,6 +29,8 @@ const initialState = {
   name: null,
   token: null,
   data: null,
+  showHistory: false,
+  loadingHistory: true,
   historys: null,
   error: null,
   loading: false
@@ -95,6 +99,17 @@ export default (state = initialState, action) => {
         historys: action.payload
       };
 
+    case UPDATE_SHOW_HISTORY:
+      return {
+        ...state,
+        showHistory: action.payload
+      };
+    case UPDATE_LOADING_HISTORY:
+      return {
+        ...state,
+        loadingHistory: action.payload
+      };
+
     case RESET:
       return {
         ...state,
@@ -102,6 +117,8 @@ export default (state = initialState, action) => {
         token: null,
         data: null,
         loading: false,
+        showHistory: false,
+        loadingHistory: true,
         user: null,
         historys: null,
         error: "Please login again"
@@ -222,6 +239,26 @@ export const fetchInformation = (sub, token) => {
     });
 
     dispatch({
+      type: UPDATE_DATA,
+      payload: null
+    });
+
+    dispatch({
+      type: UPDATE_HISTORY,
+      payload: null
+    });
+
+    dispatch({
+      type: UPDATE_SHOW_HISTORY,
+      payload: false
+    });
+
+    dispatch({
+      type: UPDATE_LOADING_HISTORY,
+      payload: true
+    });
+
+    dispatch({
       type: ERROR,
       payload: null
     });
@@ -241,29 +278,11 @@ export const fetchInformation = (sub, token) => {
         }
       })
       .then(userData => {
-        return http
-          .postWithToken(
-            "https://sevp.ice.gov/optapp/rest/students/studentHistory/" + sub,
-            null,
-            token
-          )
-          .then(res => {
-            if (Array.isArray(res)) {
-              return { userData, historys: res };
-            } else {
-              return { userData, historys: [] };
-            }
-          });
-      })
-      .then(({ userData, historys }) => {
         dispatch({
           type: UPDATE_DATA,
           payload: userData
         });
-        dispatch({
-          type: UPDATE_HISTORY,
-          payload: historys
-        });
+
         const name = userData.givenName + " " + userData.surName;
         localStorage.setItem(KEY_NAME, name);
         dispatch({
@@ -283,6 +302,42 @@ export const fetchInformation = (sub, token) => {
         localStorage.removeItem(KEY_TOKEN_EXPIRE);
         dispatch({
           type: RESET
+        });
+      });
+  };
+};
+
+export const fecthHistory = (sub, token) => {
+  return dispatch => {
+    dispatch({
+      type: UPDATE_SHOW_HISTORY,
+      payload: true
+    });
+
+    dispatch({
+      type: UPDATE_LOADING_HISTORY,
+      payload: true
+    });
+
+    ReactGA.event({
+      category: "Action",
+      action: "Fetch History"
+    });
+    http
+      .postWithToken(
+        "https://sevp.ice.gov/optapp/rest/students/studentHistory/" + sub,
+        null,
+        token
+      )
+      .then(res => (Array.isArray(res) ? res : []))
+      .then(historys => {
+        dispatch({
+          type: UPDATE_LOADING_HISTORY,
+          payload: false
+        });
+        dispatch({
+          type: UPDATE_HISTORY,
+          payload: historys
         });
       });
   };
