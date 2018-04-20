@@ -137,7 +137,7 @@ class Home extends React.Component {
           {eads.map((ead, eIndex) => (
             <div key={ead.sevisEmploymentId} className="record">
               <h3>
-                EAD#{eads.length - eIndex}
+                EAD#{eads.length - eIndex}{" "}
                 <Moment format="YYYY/MM/DD">{ead.startDate}</Moment> -{" "}
                 <Moment format="YYYY/MM/DD">{ead.endDate}</Moment>
               </h3>

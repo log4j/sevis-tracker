@@ -103,6 +103,7 @@ export default (state = initialState, action) => {
         data: null,
         loading: false,
         user: null,
+        historys: null,
         error: "Please login again"
       };
 
