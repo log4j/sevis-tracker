@@ -217,7 +217,9 @@ button.btn-logout {
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   background: white;
+  border: none;
   padding: 5px 16px;
+  text-align: center;
 }
 
 .showHistory button:hover {
