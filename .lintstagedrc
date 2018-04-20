@@ -1,0 +1,8 @@
+{
+    "gitDir": "./",
+    "linters":{
+        "src/**/*.js": [
+            "eslint --max-warnings 0"
+        ]
+    }
+}
