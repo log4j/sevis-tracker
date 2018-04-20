@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "base-64": "^0.1.0",
+    "history": "^4.7.2",
     "moment": "^2.22.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
