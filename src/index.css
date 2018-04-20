@@ -212,7 +212,8 @@ button.btn-logout {
   height: 40px;
 }
 
-.showHistory button {
+.showHistory button,
+.action button {
   border-radius: 5px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
@@ -222,7 +223,8 @@ button.btn-logout {
   text-align: center;
 }
 
-.showHistory button:hover {
+.showHistory button:hover,
+.action button:hover {
   border-radius: 5px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
