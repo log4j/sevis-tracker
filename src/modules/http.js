@@ -16,9 +16,9 @@ const windowFetch = (() => {
 const responseHandler = (res) => {
     if (
         res &&
-    res.headers &&
-    res.headers.get('Content-Type') &&
-    res.headers.get('Content-Type').indexOf('json') >= 0
+        res.headers &&
+        res.headers.get('Content-Type') &&
+        res.headers.get('Content-Type').indexOf('json') >= 0
     ) {
         return res.json();
     }
