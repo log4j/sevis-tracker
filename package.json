@@ -40,6 +40,11 @@
   },
   "homepage": "https://mangs.site",
   "lint-staged": {
-    "*.{js,json,css,md}": "eslint"
+    "*.{js,css}": "eslint --fix --ignore-pattern '!.eslintrc.js'"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    }
   }
 }

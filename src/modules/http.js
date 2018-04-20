@@ -4,55 +4,55 @@ const windowFetch = (() => {
   // DE58278: Add Edge to condition since the fetch fn in Edge has a defect which affects Dossier.
   // Once the Edge defect is fixed, we can remove that from the condition...
   // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/8546263/
-  if (!window.fetch || window.navigator.userAgent.indexOf("Edge") >= 0) {
+  if (!window.fetch || window.navigator.userAgent.indexOf('Edge') >= 0) {
     window.fetch = null;
-    require("whatwg-fetch");
+    require('whatwg-fetch'); // eslint-disable-line global-require
   }
 
   return window.fetch;
 })();
 
-const responseHandler = res => {
+
+const responseHandler = (res) => {
   if (
     res &&
     res.headers &&
-    res.headers.get("Content-Type") &&
-    res.headers.get("Content-Type").indexOf("json") >= 0
+    res.headers.get('Content-Type') &&
+    res.headers.get('Content-Type').indexOf('json') >= 0
   ) {
     return res.json();
-  } else {
-    return null;
   }
+  return null;
 };
 
 export function post(url, body, options) {
   return windowFetch(url, {
-    method: "POST",
-    body: JSON.stringify(body || {}) || "",
+    method: 'POST',
+    body: JSON.stringify(body || {}) || '',
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      ...(options && options.headers)
-    }
+      'Content-Type': 'application/json',
+      ...(options && options.headers),
+    },
   }).then(responseHandler);
 }
 
 export function postWithToken(url, body, token) {
   return post(url, body, {
     headers: {
-      Authorization: "Bearer " + token
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 }
 
 export function get(url, token, options) {
   return windowFetch(url, {
-    method: "GET",
+    method: 'GET',
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-      ...(options && options.headers)
-    }
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+      ...(options && options.headers),
+    },
   }).then(responseHandler);
 }
